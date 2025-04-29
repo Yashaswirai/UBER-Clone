@@ -222,7 +222,7 @@ This endpoint registers a new captain by accepting user and vehicle information.
 The request body must include the following fields:
 
 - **fullname.firstname** (string): Captain's first name. **Required.**
-- **fullname.lastname** (string): Captain's last name.
+- **fullname.lastname** (string): Captain's last name. **Optional.**
 - **email** (string): Captain's email address. Must be a valid email format. **Required.**
 - **password** (string): Captain's password. Must have at least 8 characters. **Required.**
 - **vehicle.color** (string): Vehicle color. **Required.**
@@ -290,6 +290,155 @@ The request body must include the following fields:
       "location": "body"
     }
   ]
+}
+```
+
+---
+
+### 2.2 Captain Login
+
+#### Endpoint
+**POST /api/captain/login**
+
+#### Description
+This endpoint logs in an existing captain. It verifies the provided email and password, and if valid, returns the captain object along with an authentication token.
+
+#### Request Data
+The request body must include:
+
+- **email** (string): Captain's email address. Must be a valid email format. **Required.**
+- **password** (string): Captain's password. **Required.**
+
+##### Example Request Body
+
+```json
+{
+  "email": "jane.smith@example.com",
+  "password": "password123"
+}
+```
+
+#### Responses
+
+##### Success (200 OK)
+- **Status Code:** 200  
+- **Body:**
+  - `captain`: The captain object.
+  - `token`: A JWT for authentication.
+
+```json
+{
+  "captain": {
+    "fullname": {
+      "firstname": "Jane",
+      "lastname": "Smith"
+    },
+    "email": "jane.smith@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "Car"
+    }
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR..."
+}
+```
+
+##### Failure (400 Bad Request)
+- **Status Code:** 400  
+- **Body:**
+  - `error`: An error message indicating invalid email or password.
+
+```json
+{
+  "error": "Invalid email or password"
+}
+```
+
+---
+
+### 2.3 Captain Profile
+
+#### Endpoint
+**GET /api/captain/profile**
+
+#### Description
+This endpoint retrieves the profile of the currently authenticated captain.
+
+#### Request Headers
+- **Authorization**: Bearer token (JWT). **Required.**
+
+#### Responses
+
+##### Success (200 OK)
+- **Status Code:** 200  
+- **Body:**
+  - `captain`: The authenticated captain's profile.
+
+```json
+{
+  "captain": {
+    "fullname": {
+      "firstname": "Jane",
+      "lastname": "Smith"
+    },
+    "email": "jane.smith@example.com",
+    "vehicle": {
+      "color": "Red",
+      "plate": "ABC123",
+      "capacity": 4,
+      "vehicleType": "Car"
+    }
+  }
+}
+```
+
+##### Failure (401 Unauthorized)
+- **Status Code:** 401  
+- **Body:**
+  - `error`: Unauthorized access.
+
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+---
+
+### 2.4 Captain Logout
+
+#### Endpoint
+**GET /api/captain/logout**
+
+#### Description
+This endpoint logs out the currently authenticated captain by blacklisting their token and clearing the authentication cookie.
+
+#### Request Headers
+- **Authorization**: Bearer token (JWT). **Required.**
+
+#### Responses
+
+##### Success (200 OK)
+- **Status Code:** 200  
+- **Body:**
+  - `message`: Confirmation of successful logout.
+
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+##### Failure (401 Unauthorized)
+- **Status Code:** 401  
+- **Body:**
+  - `error`: Unauthorized access.
+
+```json
+{
+  "error": "Unauthorized"
 }
 ```
 
