@@ -1,6 +1,7 @@
 const userModel = require('../Models/user.model')
 const userService = require('../Services/user.service')
 const { validationResult } = require('express-validator')
+const blacklistTokenModel = require('../Models/backlistToken.model')
 
 module.exports.registerUser = async (req, res) => {
     const errors = validationResult(req)
@@ -34,5 +35,17 @@ module.exports.loginUser = async (req, res) => {
         return res.status(400).json({ error: 'Invalid email or password' })
     }
     const token = await user.generateAuthToken()
+    res.cookie('token', token)
     res.status(200).json({ user, token })
+}
+
+module.exports.profile = async (req, res) => {
+    res.status(200).json({ user: req.user })
+}
+
+module.exports.logout = async (req, res) => {
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1]
+    await blacklistTokenModel.create({ token:token })
+    res.clearCookie('token')
+    res.status(200).json({ message: 'Logged out successfully' })
 }

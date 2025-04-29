@@ -3,6 +3,8 @@ const app = express()
 const connectTodb = require('./db/db')
 connectTodb()
 const userRoutes = require('./Routes/user.routes')
+const cookieParser = require('cookie-parser')
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
