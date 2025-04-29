@@ -6,7 +6,7 @@ const userRoutes = require('./Routes/user.routes')
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/api',userRoutes)
+app.use('/api/user',userRoutes)
 app.get('/', (req, res) => {
     res.send('Hello World!')
 })

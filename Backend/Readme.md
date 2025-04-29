@@ -1,19 +1,20 @@
 # API Documentation
 
-## POST /api/register
+## 1. User Registration
 
-This endpoint is used to register a new user.
+### Endpoint
+**POST /api/user/register**
 
 ### Description
-The `/api/register` endpoint accepts a POST request with a JSON body containing user information. The endpoint validates the input using express-validator and creates a new user, returning the created user object along with an authentication token.
+This endpoint registers a new user by accepting user information. It validates the input, creates a new user in the database with hashed password, and returns the created user object along with an authentication token.
 
 ### Request Data
-The request body should include the following fields:
+The request body must include the following fields:
 
-- `fullname.firstname` (string): The user's first name. **Required.**
-- `fullname.lastname` (string): The user's last name. **Required.**
-- `email` (string): The user's email address. Must be a valid email format. **Required.**
-- `password` (string): The user's password. Must be a minimum of 8 characters. **Required.**
+- **fullname.firstname** (string): User's first name. **Required.**
+- **fullname.lastname** (string): User's last name.
+- **email** (string): User's email address. Must be a valid email format. **Required.**
+- **password** (string): User's password. Must have at least 8 characters. **Required.**
 
 #### Example Request Body
 
@@ -28,12 +29,12 @@ The request body should include the following fields:
 }
 ```
 
-### Response
+### Responses
 
 #### Success (201 Created)
-- **Status Code:** 201
+- **Status Code:** 201  
 - **Body:**
-  - `user`: The created user object.
+  - `user`: The newly created user object.
   - `token`: A JSON Web Token (JWT) for authentication.
 
 ```json
@@ -43,15 +44,15 @@ The request body should include the following fields:
       "firstname": "John",
       "lastname": "Doe"
     },
-    "email": "john.doe@example.com",
-    // other user fields
+    "email": "john.doe@example.com"
+    // any additional user fields
   },
   "token": "eyJhbGciOiJIUzI1NiIsInR..."
 }
 ```
 
 #### Validation Failure (400 Bad Request)
-- **Status Code:** 400
+- **Status Code:** 400  
 - **Body:**
   - `errors`: An array of validation error objects.
 
@@ -62,16 +63,73 @@ The request body should include the following fields:
       "msg": "First Name is required",
       "param": "fullname.firstname",
       "location": "body"
-    },
-    // additional error details
+    }
+    // additional error details if applicable
   ]
 }
 ```
 
-#### Error (Other Codes)
-- Appropriate error codes and messages will be returned in case of server or database errors.
+---
 
-### Notes
-- Passwords are hashed before being stored.
-- The token generated is valid for 1 day.
-- Ensure that the environment variable `JWT_SECRET` is correctly configured for token generation.
+## 2. User Login
+
+### Endpoint
+**POST /api/user/login**
+
+### Description
+This endpoint logs in an existing user. It verifies the provided email and password, and if valid, returns the user object along with an authentication token.
+
+### Request Data
+The request body must include:
+
+- **email** (string): User's email address. Must be a valid email format. **Required.**
+- **password** (string): User's password. **Required.**
+
+#### Example Request Body
+
+```json
+{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}
+```
+
+### Responses
+
+#### Success (200 OK)
+- **Status Code:** 200  
+- **Body:**
+  - `user`: The user object.
+  - `token`: A JWT for authentication.
+
+```json
+{
+  "user": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com"
+    // any additional user fields
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR..."
+}
+```
+
+#### Failure (400 Bad Request)
+- **Status Code:** 400  
+- **Body:**
+  - `error`: An error message indicating invalid email or password.
+  
+```json
+{
+  "error": "Invalid email or password"
+}
+```
+
+---
+
+### Additional Notes
+- **Passwords:** Are securely hashed before storage.
+- **Token Validity:** Generated tokens expire after 1 day.
+- **Environment Variables:** Ensure that the `JWT_SECRET` is set in your environment for JWT generation.
