@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import React, { useState, useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { UserDataContext } from '../../context/userContext';
 const UserRegister = () => {
+  const navigate = useNavigate();
+  const {setUserData} = useContext(UserDataContext);
   const [formData, setFormData] = useState({
-    firstname: "",
-    lastname: "",
+    firstname:"",
+    lastname:"",
     email: "",
     password: ""
   });
@@ -16,9 +19,34 @@ const UserRegister = () => {
       [name]: value
     });
   };
-
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    try {
+      const requestData = {
+        fullname: {
+          firstname: formData.firstname,
+          lastname: formData.lastname
+        },
+        email: formData.email,
+        password: formData.password
+      };
+
+      const response = await axios.post('api/user/register', requestData);
+      const {user,token} = response.data;
+      if (response.status === 201) {
+        setUserData({
+          email:user.email,
+          fullname:{
+            firstname:user.firstname,
+            lastname:user.lastname,
+          },
+        })
+        localStorage.setItem("token", token);
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error('Registration error:', error.response?.data || error.message);
+    }
     // Reset form after submission
     setFormData({
       firstname: "",

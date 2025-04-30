@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
-
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { UserDataContext } from "../../context/userContext";
+import axios from "axios";
 const CaptainRegister = () => {
+  const navigate = useNavigate();
+  const { setUserData } = useContext(UserDataContext);
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -10,19 +13,49 @@ const CaptainRegister = () => {
     vehicleColor: "",
     vehiclePlate: "",
     vehicleCapacity: "",
-    vehicleType: "car"
+    vehicleType: "car",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
-
-  const submitHandler = (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
+    try {
+      const requestData = {
+        fullname: {
+          firstname: formData.firstname,
+          lastname: formData.lastname
+        },
+        email: formData.email,
+        password: formData.password,
+        vehicle: {
+          color: formData.vehicleColor,
+          plate: formData.vehiclePlate,
+          capacity: parseInt(formData.vehicleCapacity),
+          vehicleType: formData.vehicleType
+        }
+      };      
+      const response = await axios.post("api/captain/register", requestData);
+      if (response.status === 201) {
+        const { captain,token } = response.data;
+        setUserData({
+          email: captain.email,
+          fullname: {
+            firstname: captain.firstname,
+            lastname: captain.lastname,
+          },
+        });
+        localStorage.setItem("token", token);
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error("Registration error:", error.response?.data || error.message);
+    }
     // Reset form after submission
     setFormData({
       firstname: "",
@@ -32,7 +65,7 @@ const CaptainRegister = () => {
       vehicleColor: "",
       vehiclePlate: "",
       vehicleCapacity: "",
-      vehicleType: "car"
+      vehicleType: "car",
     });
   };
 
@@ -129,7 +162,10 @@ const CaptainRegister = () => {
               placeholder="ABC-123"
             />
 
-            <label className="text-2xl font-medium mb-4" htmlFor="vehicleCapacity">
+            <label
+              className="text-2xl font-medium mb-4"
+              htmlFor="vehicleCapacity"
+            >
               Vehicle Capacity
             </label>
             <input
@@ -175,6 +211,6 @@ const CaptainRegister = () => {
       </div>
     </div>
   );
-}
+};
 
-export default CaptainRegister
+export default CaptainRegister;

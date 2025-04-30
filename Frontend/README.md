@@ -1,12 +1,92 @@
-# React + Vite
+# Ride-Sharing Application Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend implementation of a ride-sharing application built with React and Vite. The application handles both user and captain (driver) functionalities including registration, authentication, and profile management.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React** - UI Library
+- **Vite** - Build Tool and Development Server
+- **Tailwind CSS** - Utility-first CSS Framework
+- **Axios** - HTTP Client
+- **React Router** - Client-side Routing
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### User Management
+- User Registration
+- User Login/Logout
+- User Profile Management
+
+### Captain Management
+- Captain Registration with Vehicle Details
+- Captain Login/Logout
+- Captain Profile Management
+
+### Vehicle Types Supported
+- Car
+- Motorcycle
+- Auto
+
+## API Integration
+
+The frontend communicates with a backend server running on port 3000. API requests are proxied through Vite's development server to avoid CORS issues.
+
+### Proxy Configuration
+```javascript
+server: {
+  proxy: {
+    '/api': {
+      target: 'http://localhost:3000',
+      changeOrigin: true
+    }
+  }
+}
+```
+
+## Getting Started
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Start the development server:
+```bash
+npm run dev
+```
+
+3. Build for production:
+```bash
+npm run build
+```
+
+4. Preview production build:
+```bash
+npm run preview
+```
+
+## Environment Setup
+
+Make sure your backend server is running on `http://localhost:3000` before starting the frontend application.
+
+## Development
+
+The application uses:
+- HMR (Hot Module Replacement) for fast refresh during development
+- ESLint for code quality
+- Tailwind CSS for styling
+- Axios for API requests
+- React Router for navigation
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details
+
