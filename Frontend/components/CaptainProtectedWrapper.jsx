@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
-const UserProtectWrapper = ({children}) => {
-    const token = localStorage.getItem("token");
+const CaptainProtectedWrapper = ({children}) => {
     const [loadding, setLoadding] = useState(true)
+    const token = localStorage.getItem("token");
     const navigate = useNavigate();
     useEffect(() => {
         if(!token){
-            navigate("/userlogin");
+            navigate("/captainlogin");
         }
     }, [token,navigate]);
     useEffect(() => {
-        const checkUser = async () => {
+        const checkCaptain = async () => {
             try {
-                const response = await axios.get("api/user/profile", {
+                const response = await axios.get("api/captain/profile", {
                     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                 });
                 if (response.status === 200) {
@@ -25,7 +25,7 @@ const UserProtectWrapper = ({children}) => {
                 setLoadding(false);
             }
         };
-        checkUser();
+        checkCaptain();
     }, []);
   return (
     <>
@@ -35,4 +35,4 @@ const UserProtectWrapper = ({children}) => {
   )
 }
 
-export default UserProtectWrapper
+export default CaptainProtectedWrapper

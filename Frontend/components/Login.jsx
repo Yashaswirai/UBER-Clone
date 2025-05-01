@@ -2,10 +2,11 @@ import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../context/userContext";
-
+import { CaptainDataContext } from "../context/CaptainContext";
 const Login = (props) => {
   const navigate = useNavigate();
   const { setUserData } = useContext(UserDataContext);
+  const { setCaptainData } = useContext(CaptainDataContext);;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +36,7 @@ const Login = (props) => {
         );
         if (captainResponse.status === 200) {
           const { captain,token } = captainResponse.data;
-          setUserData({
+          setCaptainData({
             email: captain.email,
             fullname: {
               firstname: captain.firstname,
@@ -43,7 +44,7 @@ const Login = (props) => {
             },
           });
           localStorage.setItem("token", token);
-          navigate("/home");
+          navigate("/captainhome");
         }
       } catch (error) {
         console.error('Login error:', error.response?.data || error.message); // Handle the error if user login fails

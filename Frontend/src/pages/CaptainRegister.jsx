@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserDataContext } from "../../context/userContext";
+import { CaptainDataContext } from "../../context/CaptainContext";
 import axios from "axios";
 const CaptainRegister = () => {
   const navigate = useNavigate();
-  const { setUserData } = useContext(UserDataContext);
+  const { setCaptainData } = useContext(CaptainDataContext);;
   const [formData, setFormData] = useState({
     firstname: "",
     lastname: "",
@@ -43,7 +43,7 @@ const CaptainRegister = () => {
       const response = await axios.post("api/captain/register", requestData);
       if (response.status === 201) {
         const { captain,token } = response.data;
-        setUserData({
+        setCaptainData({
           email: captain.email,
           fullname: {
             firstname: captain.firstname,
@@ -51,7 +51,7 @@ const CaptainRegister = () => {
           },
         });
         localStorage.setItem("token", token);
-        navigate("/home");
+        navigate("/captainhome");
       }
     } catch (error) {
       console.error("Registration error:", error.response?.data || error.message);
